@@ -1,6 +1,6 @@
 {
   "name": "resumer",
-  "author": "Xolas",
+  "author": "Xolas <nicolas.steck@hotmail.com>",
   "version": "0.1.0",
   "description": "It's never been so easy to resume a pdf's content",
   "main": "./.webpack/main/index.js",
@@ -15,10 +15,13 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
+    "pdf.js-extract": "^0.1.5",
+    "puppeteer": "^10.2.0",
+    "puppeteer-in-electron": "^3.0.5",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hot-loader": "4.13.0",
-    "styled-components": "5.3.0"
+    "styled-components": "^5.3.1"
   },
   "devDependencies": {
     "@babel/core": "7.14.6",
@@ -37,6 +40,7 @@
     "@testing-library/react": "11.2.7",
     "@types/electron-devtools-installer": "2.2.0",
     "@types/jest": "26.0.23",
+    "@types/node": "^16.7.13",
     "@types/react": "17.0.11",
     "@types/react-dom": "17.0.8",
     "@types/styled-components": "5.1.10",
@@ -58,7 +62,7 @@
     "npm-run-all": "4.1.5",
     "prettier": "2.3.1",
     "ts-jest": "27.0.3",
-    "typescript": "4.3.4",
+    "typescript": "4.3.5",
     "wait-on": "5.3.0"
   },
   "config": {
@@ -81,7 +85,7 @@
               "entryPoints": [
                 {
                   "html": "./public/index.html",
-                  "js": "./src/index.tsx",
+                  "js": "./src/views/index.tsx",
                   "name": "main_window",
                   "preload": {
                     "js": "./electron/bridge.ts"

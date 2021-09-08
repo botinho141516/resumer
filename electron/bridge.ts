@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron';
 
 export const api = {
   /**
@@ -9,7 +9,7 @@ export const api = {
    * The function below can accessed using `window.Main.sayHello`
    */
 
-  sendMessage: (message: string) => { 
+  sendMessage: (message: string) => {
     ipcRenderer.send('message', message)
   },
 
