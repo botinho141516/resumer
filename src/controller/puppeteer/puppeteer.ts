@@ -1,5 +1,6 @@
-import { Browser, PuppeteerNode } from 'puppeteer';
 import { DefaultReturn } from '..';
+import { PuppeteerNode, Browser } from 'puppeteer-core';
+
 const puppeteer = require('puppeteer');
 
 

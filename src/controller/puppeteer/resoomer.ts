@@ -1,4 +1,4 @@
-import { Browser, Page } from 'puppeteer';
+import { Browser, Page } from 'puppeteer-core';
 import { DefaultReturn } from '..';
 
 
@@ -37,7 +37,7 @@ export const initResoomerPuppeteer = () => {
         resumeInput.value = content;
 
         return {
-          result:undefined,
+          result: undefined,
         }
 
       }, content);
@@ -50,7 +50,7 @@ export const initResoomerPuppeteer = () => {
 
 
       // click the button
-      const clickButton:DefaultReturn<undefined> = await page.evaluate(() => {
+      const clickButton: DefaultReturn<undefined> = await page.evaluate(() => {
         const resumeButton = document.querySelector<HTMLElement>('#btnSendText_V2');
 
         if (!resumeButton) {
@@ -98,7 +98,7 @@ export const initResoomerPuppeteer = () => {
         const resumedContent = outputElement.innerText;
 
         return {
-          result:resumedContent
+          result: resumedContent
         };
       });
 
