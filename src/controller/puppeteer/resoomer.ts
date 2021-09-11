@@ -1,5 +1,5 @@
 import { Browser, Page } from 'puppeteer-core';
-import { DefaultReturn } from '..';
+import { DefaultReturn } from '../../@types/controller';
 
 
 export const initResoomerPuppeteer = () => {

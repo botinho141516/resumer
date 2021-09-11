@@ -11,7 +11,6 @@ export const initControllers = ({ puppeteer, resoomer }: IControllers) => {
 
   const resumeText = async (text: string) => {
     try {
-
       const { error: startPuppeteerError, result: browser } = await puppeteer.startPuppeteer();
 
       if (startPuppeteerError) {

@@ -1,5 +1,4 @@
 import styled, { keyframes } from 'styled-components';
-// import controllers from '../../controller';
 import Button from '../components/Button';
 
 const rotate = keyframes`
@@ -35,11 +34,11 @@ const Text = styled.p`
 `;
 
 function HomePage() {
-  function handleSayHello() {
-    window.Main.startPuppeteer();
-
-    console.log('Message sent! Check main process log in terminal.')
-  }
+  //   function handleSayHello() {
+  //     window.Main.startPuppeteer();
+  // 
+  //     console.log('Message sent! Check main process log in terminal.')
+  //   }
 
   return (
     <Container>
@@ -48,7 +47,7 @@ function HomePage() {
         alt="ReactJS logo"
       />
       <Text>An Electron boilerplate including TypeScript, React, Jest and ESLint.</Text>
-      <Button onClick={() => { handleSayHello() }}>Send message to main process</Button>
+      <Button onClick={() => window.Main.start('Send message to main process')}>Send message to main process</Button>
     </Container>
   )
 }

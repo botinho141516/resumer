@@ -1,7 +1,7 @@
 import { PDFExtract, PDFExtractOptions, PDFExtractResult } from 'pdf.js-extract'
 import { existsSync } from "fs"
 import { join } from "path"
-import { DefaultReturn } from '.'
+import { DefaultReturn } from '../@types/controller'
 
 
 export const initPdfReader = () => {

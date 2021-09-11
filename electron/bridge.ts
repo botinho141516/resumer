@@ -9,12 +9,12 @@ export const api = {
    * The function below can accessed using `window.Main.sayHello`
    */
 
+  start: (text: string) => {
+    console.log(text)
+    ipcRenderer.send('start', text)
+  },
   sendMessage: (message: string) => {
     ipcRenderer.send('message', message)
-  },
-
-  startPuppeteer: () => {
-    ipcRenderer.send('startPuppeteer')
   },
 
   /**

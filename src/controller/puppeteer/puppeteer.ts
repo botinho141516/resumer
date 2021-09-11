@@ -1,15 +1,19 @@
-import { DefaultReturn } from '..';
-import { PuppeteerNode, Browser } from 'puppeteer-core';
+import { app as appType } from 'electron';
+import { Browser } from 'puppeteer-core';
+import pieType from 'puppeteer-in-electron';
+import { DefaultReturn } from '../../@types/controller';
 
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 
 
-export const initPuppeteer = () => {
+interface IPuppeteer {
+  app: typeof appType;
+  pie: typeof pieType
+}
+
+export const initPuppeteer = ({ app, pie }: IPuppeteer) => {
   const startPuppeteer = async (): Promise<DefaultReturn<Browser>> => {
-    const browser = await (puppeteer as PuppeteerNode).launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      headless: false,
-    });
+    const browser = await pie.connect(app, puppeteer);
 
     if (!browser) {
       return {
@@ -24,7 +28,7 @@ export const initPuppeteer = () => {
 
   const endPuppeteer = async (browser: Browser): Promise<DefaultReturn<boolean>> => {
     try {
-      await browser.close();
+      browser.close();
 
       return {
         result: true,

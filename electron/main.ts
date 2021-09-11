@@ -1,14 +1,23 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import pie from "puppeteer-in-electron";
-const puppeteer = require("puppeteer-core");
+import { initControllers } from '../src/controller/controllers';
+import { initPuppeteer } from '../src/controller/puppeteer/puppeteer';
+import { initResoomerPuppeteer } from '../src/controller/puppeteer/resoomer';
+import pie from 'puppeteer-in-electron';
 
 let mainWindow: BrowserWindow | null
 
+pie.initialize(app);
+
+
+const puppeteerController = initPuppeteer({ app, pie });
+const resoomer = initResoomerPuppeteer();
+const controllers = initControllers({
+  puppeteer: puppeteerController,
+  resoomer
+});
+
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
-
-
-pie.initialize(app);
 
 // const assetsPath =
 //   process.env.NODE_ENV === 'production'
@@ -22,7 +31,7 @@ function createWindow() {
     height: 700,
     backgroundColor: '#191622',
     webPreferences: {
-      nodeIntegration: false,
+      nodeIntegration: true,
       contextIsolation: true,
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY
     }
@@ -43,21 +52,10 @@ async function registerListeners() {
     console.log(message);
   });
 
-  ipcMain.on('startPuppeteer', () => {
-    startPuppeteer();
+  ipcMain.on('start', (_, text: string) => {
+    console.log(_, text)
+    controllers.resumeText(text);
   });
-}
-
-const startPuppeteer = async (): Promise<any> => {
-  const browser = await pie.connect(app, puppeteer);
-
-  const window = new BrowserWindow();
-  const url = "https://example.com/";
-  await window.loadURL(url);
-
-  const page = await pie.getPage(browser, window);
-  console.log(page.url());
-  window.destroy();
 }
 
 
