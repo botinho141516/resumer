@@ -1,34 +1,18 @@
-import { app as appType } from 'electron';
-import { Browser } from 'puppeteer-core';
-import pieType from 'puppeteer-in-electron';
+import { BrowserWindow, app } from 'electron';
 import { DefaultReturn } from '../../@types/controller';
+import pie from 'puppeteer-in-electron';
 
 const puppeteer = require('puppeteer-core');
 
 
-interface IPuppeteer {
-  app: typeof appType;
-  pie: typeof pieType
-}
+export const initPuppeteer = async () => {
 
-export const initPuppeteer = ({ app, pie }: IPuppeteer) => {
-  const startPuppeteer = async (): Promise<DefaultReturn<Browser>> => {
-    const browser = await pie.connect(app, puppeteer);
+  const browser = await pie.connect(app, puppeteer);
 
-    if (!browser) {
-      return {
-        error: 'Browser not found'
-      }
-    }
 
-    return {
-      result: browser
-    };
-  }
-
-  const endPuppeteer = async (browser: Browser): Promise<DefaultReturn<boolean>> => {
+  const closeWindow = async (window: BrowserWindow): Promise<DefaultReturn<boolean>> => {
     try {
-      browser.close();
+      window.destroy();
 
       return {
         result: true,
@@ -42,8 +26,8 @@ export const initPuppeteer = ({ app, pie }: IPuppeteer) => {
   }
 
   return {
-    startPuppeteer,
-    endPuppeteer,
+    browser,
+    closeWindow,
   }
 }
 

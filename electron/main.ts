@@ -1,23 +1,17 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
-import { initControllers } from '../src/controller/controllers';
-import { initPuppeteer } from '../src/controller/puppeteer/puppeteer';
-import { initResoomerPuppeteer } from '../src/controller/puppeteer/resoomer';
+import { UnwrapPromiseLike } from 'puppeteer-core';
 import pie from 'puppeteer-in-electron';
+import { initControllers } from '../src/controller/controllers';
+
+
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string
+declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
+
 
 let mainWindow: BrowserWindow | null
 
 pie.initialize(app);
 
-
-const puppeteerController = initPuppeteer({ app, pie });
-const resoomer = initResoomerPuppeteer();
-const controllers = initControllers({
-  puppeteer: puppeteerController,
-  resoomer
-});
-
-declare const MAIN_WINDOW_WEBPACK_ENTRY: string
-declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string
 
 // const assetsPath =
 //   process.env.NODE_ENV === 'production'
@@ -44,7 +38,7 @@ function createWindow() {
   })
 }
 
-async function registerListeners() {
+async function registerListeners(controllers: UnwrapPromiseLike<ReturnType<typeof initControllers>>) {
   /**
    * This comes from bridge integration, check bridge.ts
    */
@@ -53,7 +47,6 @@ async function registerListeners() {
   });
 
   ipcMain.on('start', (_, text: string) => {
-    console.log(_, text)
     controllers.resumeText(text);
   });
 }
@@ -61,6 +54,7 @@ async function registerListeners() {
 
 app.on('ready', createWindow)
   .whenReady()
+  .then(initControllers)
   .then(registerListeners)
   .catch(e => console.error(e))
 
@@ -76,3 +70,4 @@ app.on('activate', () => {
     createWindow()
   }
 })
+

@@ -1,13 +1,20 @@
+import { BrowserWindow } from 'electron';
 import { Browser, Page } from 'puppeteer-core';
 import { DefaultReturn } from '../../@types/controller';
+import pie from 'puppeteer-in-electron'
+interface IResoomerPuppeteer {
+  browser: Browser;
+}
 
-
-export const initResoomerPuppeteer = () => {
-  const goToResoomer = async (browser: Browser): Promise<DefaultReturn<Page>> => {
+export const initResoomerPuppeteer = ({ browser }: IResoomerPuppeteer) => {
+  const goToResoomer = async (window: BrowserWindow): Promise<DefaultReturn<Page>> => {
     try {
-      const page = await browser.newPage();
+      const url = 'https://resoomer.com/en/';
 
-      await page.goto('https://resoomer.com/en/', { timeout: 15000 });
+
+      await window.loadURL(url);
+
+      const page = await pie.getPage(browser, window);
 
       await page.waitForSelector('#contentText');
 

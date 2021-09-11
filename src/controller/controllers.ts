@@ -1,47 +1,44 @@
+import { BrowserWindow } from 'electron';
 import { initPuppeteer } from "./puppeteer/puppeteer";
 import { initResoomerPuppeteer } from "./puppeteer/resoomer";
 
-export interface IControllers {
-  puppeteer: ReturnType<typeof initPuppeteer>;
-  resoomer: ReturnType<typeof initResoomerPuppeteer>;
-}
+
+export const initControllers = async () => {
 
 
-export const initControllers = ({ puppeteer, resoomer }: IControllers) => {
+  const { browser, closeWindow } = await initPuppeteer();
+  const resoomerController = initResoomerPuppeteer({ browser });
 
   const resumeText = async (text: string) => {
     try {
-      const { error: startPuppeteerError, result: browser } = await puppeteer.startPuppeteer();
 
-      if (startPuppeteerError) {
-        throw new Error(startPuppeteerError);
-      }
+      const window = new BrowserWindow();
 
-
-      const { error: goToResoomerError, result: page } = await resoomer.goToResoomer(browser);
+      const { error: goToResoomerError, result: page } = await resoomerController.goToResoomer(window);
 
 
       if (goToResoomerError) {
         throw new Error(goToResoomerError);
       }
 
-      const { error: getResumeError, result: resume } = await resoomer.getResume(page, text);
+      const { error: getResumeError, result: resume } = await resoomerController.getResume(page, text);
 
       if (getResumeError) {
         throw new Error(getResumeError);
       }
 
-      await puppeteer.endPuppeteer(browser);
+      // await closeWindow(window);
       return resume;
     } catch (err) {
-      console.log(err);
+      console.log({ err });
     }
 
   }
 
   return {
-    ...puppeteer,
-    ...resoomer,
+    ...resoomerController,
+    closeWindow,
+    browser,
     resumeText,
   }
 }
