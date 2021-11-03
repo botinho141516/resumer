@@ -1,15 +1,25 @@
-import { Browser, Page } from 'puppeteer';
-import { DefaultReturn } from '..';
+import { BrowserWindow } from 'electron';
+import { Browser, Page } from 'puppeteer-core';
+import { DefaultReturn } from '../../@types/controller';
+import pie from 'puppeteer-in-electron'
+interface IResoomerPuppeteer {
+  browser: Browser;
+}
 
-
-export const initResoomerPuppeteer = () => {
-  const goToResoomer = async (browser: Browser): Promise<DefaultReturn<Page>> => {
+export const initResoomerPuppeteer = ({ browser }: IResoomerPuppeteer) => {
+  const goToResoomer = async (window: BrowserWindow): Promise<DefaultReturn<Page>> => {
     try {
-      const page = await browser.newPage();
+      const url = 'https://resoomer.com/en/';
 
-      await page.goto('https://resoomer.com/en/', { timeout: 15000 });
 
-      await page.waitForSelector('#contentText');
+      await window.loadURL(url);
+
+      const page = await pie.getPage(browser, window);
+
+      await Promise.all([
+        await page.waitForSelector('#contentText'),
+        await page.waitForSelector('#btnSendText_V2'),
+      ]);
 
       return {
         result: page
@@ -37,20 +47,19 @@ export const initResoomerPuppeteer = () => {
         resumeInput.value = content;
 
         return {
-          result:undefined,
+          result: undefined,
         }
 
       }, content);
 
-      if (pasteResume) {
+      if (pasteResume.error) {
         return {
           error: pasteResume.error,
         };
       }
 
-
       // click the button
-      const clickButton:DefaultReturn<undefined> = await page.evaluate(() => {
+      const clickButton: DefaultReturn<undefined> = await page.evaluate(() => {
         const resumeButton = document.querySelector<HTMLElement>('#btnSendText_V2');
 
         if (!resumeButton) {
@@ -58,7 +67,6 @@ export const initResoomerPuppeteer = () => {
             error: 'Element not found'
           };
         }
-
         resumeButton.click();
         return {
           result: undefined
@@ -98,7 +106,7 @@ export const initResoomerPuppeteer = () => {
         const resumedContent = outputElement.innerText;
 
         return {
-          result:resumedContent
+          result: resumedContent
         };
       });
 
@@ -126,3 +134,18 @@ export const initResoomerPuppeteer = () => {
   }
 }
 
+
+
+// {
+//   const a = [[1, 5, 7, 8, 16], [1, 2, 3, 3, 3, 3, 4, 4, 6, 8]]
+// 
+//   const b = [1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 6, 7, 8, 8, 16]
+// 
+// 
+// 
+// 
+// 
+// 
+//   console.log(a,b)
+// 
+// }

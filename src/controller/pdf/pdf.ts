@@ -1,4 +1,4 @@
-import { DefaultReturn } from "../.."
+import { DefaultReturn } from ".."
 import { PDFExtract, PDFExtractOptions, PDFExtractResult } from 'pdf.js-extract'
 import { existsSync } from "fs"
 import { join } from "path"
