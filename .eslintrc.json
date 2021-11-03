@@ -24,5 +24,22 @@
   ],
   "rules": {
     "react/prop-types": "off"
-  }
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "globals": {
+    "React": true,
+    "JSX": true,
+  },
+  "overrides": [
+    {
+        "files": ["*.ts"],
+        "rules": {
+            "no-undef": "off"
+        }
+    }
+]
 }

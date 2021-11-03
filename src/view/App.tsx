@@ -1,12 +1,15 @@
-import { GlobalStyle } from './styles/GlobalStyle'
+import { GlobalStyle } from "./styles/GlobalStyle";
 
-import HomePage from './pages/HomePage'
+import HomePage from "./pages/HomePage";
+import { RecoilRoot } from "recoil";
 
 export function App() {
   return (
     <>
-      <GlobalStyle />
-      <HomePage />
+      <RecoilRoot>
+        <GlobalStyle />
+        <HomePage />
+      </RecoilRoot>
     </>
-  )
+  );
 }
