@@ -16,7 +16,10 @@ export const initResoomerPuppeteer = ({ browser }: IResoomerPuppeteer) => {
 
       const page = await pie.getPage(browser, window);
 
-      await page.waitForSelector('#contentText');
+      await Promise.all([
+        await page.waitForSelector('#contentText'),
+        await page.waitForSelector('#btnSendText_V2'),
+      ]);
 
       return {
         result: page
@@ -49,12 +52,11 @@ export const initResoomerPuppeteer = ({ browser }: IResoomerPuppeteer) => {
 
       }, content);
 
-      if (pasteResume) {
+      if (pasteResume.error) {
         return {
           error: pasteResume.error,
         };
       }
-
 
       // click the button
       const clickButton: DefaultReturn<undefined> = await page.evaluate(() => {
@@ -65,7 +67,6 @@ export const initResoomerPuppeteer = ({ browser }: IResoomerPuppeteer) => {
             error: 'Element not found'
           };
         }
-
         resumeButton.click();
         return {
           result: undefined
@@ -133,3 +134,18 @@ export const initResoomerPuppeteer = ({ browser }: IResoomerPuppeteer) => {
   }
 }
 
+
+
+// {
+//   const a = [[1, 5, 7, 8, 16], [1, 2, 3, 3, 3, 3, 4, 4, 6, 8]]
+// 
+//   const b = [1, 1, 2, 3, 3, 3, 3, 4, 4, 5, 6, 7, 8, 8, 16]
+// 
+// 
+// 
+// 
+// 
+// 
+//   console.log(a,b)
+// 
+// }
