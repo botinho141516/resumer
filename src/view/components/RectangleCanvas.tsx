@@ -22,7 +22,7 @@ const Canvas = styled.canvas<ICanvas>`
   top: 0;
   left: 0;
   opacity: 1;
-  z-index: 1;
+  z-index: 3;
   cursor: ${(props) => (props.isDrawing ? "crosshair" : "default")};
   background-color: transparent;
   border: 1px solid blue;
@@ -49,38 +49,45 @@ function RectangleCanvas(props: RectangleCanvasProps) {
   const pdf = useRecoilValue(pdfAtom);
 
   const initialPoint = useRef({ x: 0, y: 0 });
-  const currentPoint = useRef({ x: 0, y: 0 });
+  const finalPoint = useRef({ x: 0, y: 0 });
   const isDrawing = useRef(false);
   const canvas = useRef<HTMLCanvasElement>(null);
 
-  function handleMouseDown(e: MouseEvent) {
+  function handleMouseClick(e: MouseEvent) {
     if (isDrawing.current) return;
 
     initialPoint.current = { x: e.clientX, y: e.clientY };
-    currentPoint.current = { x: e.clientX, y: e.clientY };
+    finalPoint.current = { x: e.clientX, y: e.clientY };
     isDrawing.current = true;
   }
 
   function handleMouseMove(e: MouseEvent) {
     if (!initialPoint.current) return;
 
-    currentPoint.current = { x: e.clientX, y: e.clientY };
+    finalPoint.current = { x: e.clientX, y: e.clientY };
 
     if (isDrawing.current) {
       drawRectangle();
     }
   }
 
-  function handleMouseUp() {
+  function handleClickRelease() {
     if (!isDrawing.current) return;
 
     isDrawing.current = false;
 
+    console.log({ initialPoint: initialPoint.current, finalPoint: finalPoint.current });
+
+    const initialX = Math.min(finalPoint.current.x, initialPoint.current.x);
+    const initialY = Math.min(finalPoint.current.y, initialPoint.current.y);
+    const finalX = Math.max(finalPoint.current.x, initialPoint.current.x);
+    const finalY = Math.max(finalPoint.current.y, initialPoint.current.y);
+
     const newRectangle: IRectangleAtom = {
-      y: initialPoint.current.y,
-      x: initialPoint.current.x,
-      width: currentPoint.current.x - initialPoint.current.x,
-      height: currentPoint.current.y - initialPoint.current.y,
+      y: initialY,
+      x: initialX,
+      width: finalX - initialX,
+      height: finalY - initialY,
       pdfPage: pdf.currentPage,
     };
 
@@ -89,7 +96,7 @@ function RectangleCanvas(props: RectangleCanvasProps) {
 
   const drawRectangle = () => {
     if (!initialPoint.current) return;
-    if (!currentPoint.current) return;
+    if (!finalPoint.current) return;
     if (!canvas.current) return;
 
     const { x: canvasX, y: canvasY } = canvas.current.getBoundingClientRect();
@@ -102,8 +109,8 @@ function RectangleCanvas(props: RectangleCanvasProps) {
     ctx.strokeRect(
       initialPoint.current.x + canvasX,
       initialPoint.current.y + canvasY,
-      currentPoint.current.x - initialPoint.current.x,
-      currentPoint.current.y - initialPoint.current.y
+      finalPoint.current.x - initialPoint.current.x,
+      finalPoint.current.y - initialPoint.current.y
     );
   };
 
@@ -111,8 +118,8 @@ function RectangleCanvas(props: RectangleCanvasProps) {
     if (!canvas.current) return;
 
     canvas.current.addEventListener("mousemove", handleMouseMove);
-    canvas.current.addEventListener("mousedown", handleMouseDown);
-    canvas.current.addEventListener("mouseup", handleMouseUp);
+    canvas.current.addEventListener("mousedown", handleMouseClick);
+    canvas.current.addEventListener("mouseup", handleClickRelease);
   }, [canvas]);
 
   return (

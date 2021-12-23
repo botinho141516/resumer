@@ -2,15 +2,15 @@ import { useRef } from "react";
 import { Document, Page, pdfjs } from "react-pdf/dist/esm/entry.webpack";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import pdfAtom from "../atoms/PdfAtom";
-import pdf from "./a.pdf";
+import pdfAtom, { IPdfAtom } from "../atoms/PdfAtom";
+import pdf from "../../../assets/a.pdf";
 
 const Container = styled.div`
   border: 1px solid red;
 `;
 
 function PdfContainer() {
-  const [pdfState, setPdfState] = useRecoilState(pdfAtom);
+  const [pdfState, setPdfState] = useRecoilState<IPdfAtom>(pdfAtom);
   const pdfRef = useRef<Document>(null);
 
   const changePageHandler = (newPage: number) => {
